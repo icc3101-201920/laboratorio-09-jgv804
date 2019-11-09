@@ -6,6 +6,8 @@ namespace Laboratorio_8_OOP_201920
 {
     public static class Effect
     {
+        private static Dictionary<EnumType, List<Card>>[] playedCards;
+
         private static Dictionary<EnumEffect, string> effectDescriptions = new Dictionary<EnumEffect, string>()
         {
             { EnumEffect.bitingFrost, "Sets the strength of all melee cards to 1 for both players" },
@@ -26,7 +28,106 @@ namespace Laboratorio_8_OOP_201920
 
         public static void ApplyEffect(Card playedCard, Player activePlayer, Player opponent, Board board)
         {
-            //Recomendación: Utilice switch(playedCard.CardEffect) para definir los distintos efectos.
+            if(playedCard.CardEffect == EnumEffect.bitingFrost)
+            {
+                
+                for (int i = 0; i < 2; i++)
+                {
+                    if (board.PlayerCards[i].ContainsKey(EnumType.melee))
+                    {
+                        foreach (CombatCard card in board.PlayerCards[i][EnumType.melee])
+                        {
+                            CombatCard p = new CombatCard(card.Name, card.Type, card.CardEffect,card.AttackPoints, false);
+                            playedCards[i][EnumType.melee].Add(p); 
+
+                            card.AttackPoints=1;
+                        }
+                    }
+                }
+            }
+            if (playedCard.CardEffect == EnumEffect.impenetrableFog)
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    if (board.PlayerCards[i].ContainsKey(EnumType.range))
+                    {
+                        foreach (CombatCard card in board.PlayerCards[i][EnumType.range])
+                        {
+                            CombatCard p = new CombatCard(card.Name, card.Type, card.CardEffect, card.AttackPoints, false);
+                            playedCards[i][EnumType.range].Add(p);
+
+                            card.AttackPoints = 1;
+                        }
+                    }
+                }
+
+            }
+            if (playedCard.CardEffect == EnumEffect.torrentialRain)
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    if (board.PlayerCards[i].ContainsKey(EnumType.longRange))
+                    {
+                        foreach (CombatCard card in board.PlayerCards[i][EnumType.longRange])
+                        {
+                            CombatCard p = new CombatCard(card.Name, card.Type, card.CardEffect, card.AttackPoints, false);
+                            playedCards[i][EnumType.longRange].Add(p);
+
+                            card.AttackPoints = 1;
+                        }
+                    }
+                }
+
+            }
+            if (playedCard.CardEffect == EnumEffect.clearWeather)
+            {
+                int counter = 0;
+                for (int i = 0; i < 2; i++)
+                {
+                    if (board.PlayerCards[i].ContainsKey(EnumType.longRange))
+                    {
+                        foreach (CombatCard card in board.PlayerCards[i][EnumType.longRange])
+                        {
+
+                            CombatCard c = playedCards[i][EnumType.longRange][counter] as CombatCard;
+
+                            card.AttackPoints = c.AttackPoints;
+                            counter += 1;
+                        }
+                        counter = 0;
+                    }
+                    if (board.PlayerCards[i].ContainsKey(EnumType.range))
+                    {
+                        foreach (CombatCard card in board.PlayerCards[i][EnumType.range])
+                        {
+
+                            CombatCard c = playedCards[i][EnumType.range][counter] as CombatCard;
+
+                            card.AttackPoints = c.AttackPoints;
+                            counter += 1;
+                        }
+                        counter = 0;
+                    }
+                    if (board.PlayerCards[i].ContainsKey(EnumType.melee))
+                    {
+                        foreach (CombatCard card in board.PlayerCards[i][EnumType.melee])
+                        {
+
+                            CombatCard c = playedCards[i][EnumType.melee][counter] as CombatCard;
+
+                            card.AttackPoints = c.AttackPoints;
+                            counter += 1;
+
+                        }
+                        counter = 0;
+                    }
+
+
+
+                }
+
+
+            }
         }
     }
 }
