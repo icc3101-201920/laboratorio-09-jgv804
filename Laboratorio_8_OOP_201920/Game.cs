@@ -25,6 +25,7 @@ namespace Laboratorio_8_OOP_201920
         internal int turn;
         internal bool bothPlayersPlayed;
         private Dictionary<string, Object> actualData;
+        
 
         //Constructor
         public Game()
@@ -444,6 +445,38 @@ namespace Laboratorio_8_OOP_201920
             {
                 File.Delete(fileName);
             }
+            
+        }
+        public void OnPlayedCard(object source, PlayerEventArgs e)
+        {
+            Player JJ = new Player();
+            JJ = source as Player;
+            if(JJ.Id == this.activePlayer.Id)
+            {
+                if (JJ.Id == 0)
+                {
+                    Effect.ApplyEffect(e.card,JJ,this.Players[1],this.BoardGame);
+                }
+                else
+                {
+
+                    Effect.ApplyEffect(e.card, JJ, this.Players[0], this.BoardGame);
+                }
+            }
+            else
+            {
+                if (JJ.Id == 0)
+                {
+                    Effect.ApplyEffect(e.card, this.Players[1], JJ, this.BoardGame);
+                }
+                else
+                {
+
+                    Effect.ApplyEffect(e.card, this.Players[0], JJ, this.BoardGame);
+                }
+
+            }
+
             
         }
     }

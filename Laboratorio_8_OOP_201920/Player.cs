@@ -25,6 +25,8 @@ namespace Laboratorio_8_OOP_201920
         private Board board;
         private SpecialCard captain;
 
+        public event EventHandler<PlayerEventArgs> CardPlayed;
+
         //Constructor
         public Player()
         {
@@ -99,6 +101,7 @@ namespace Laboratorio_8_OOP_201920
             Card tempCard = CreateTempCard(cardId);
             hand.AddCard(tempCard);
             deck.DestroyCard(cardId);
+            OnCardPlayed(tempCard);
         }
         public void PlayCard(int cardId, EnumType buffRow = EnumType.None)
         {
@@ -108,16 +111,19 @@ namespace Laboratorio_8_OOP_201920
             if (tempCard is CombatCard)
             {
                 board.AddCard(tempCard, this.Id);
+                OnCardPlayed(tempCard);
             }
             else
             {
                 if (tempCard.Type == EnumType.buff)
                 {
                     board.AddCard(tempCard, this.Id, buffRow);
+                    OnCardPlayed(tempCard);
                 }
                 else
                 {
                     board.AddCard(tempCard);
+                    OnCardPlayed(tempCard);
                 }
             }
             hand.DestroyCard(cardId);
@@ -133,6 +139,7 @@ namespace Laboratorio_8_OOP_201920
             hand.AddCard(tempDeckCard);
             deck.DestroyCard(deckCardId);
             deck.AddCard(tempCard);
+            OnCardPlayed(tempDeckCard);
         }
 
         public void FirstHand()
@@ -186,5 +193,19 @@ namespace Laboratorio_8_OOP_201920
             }
             return new int[] { attackPoints };
         }
+
+        public void OnCardPlayed(Card card)
+        {
+            //3.1- Revisar si existen suscriptores
+            if (CardPlayed != null)
+            {
+                //3.2- Se dispara el evento. La fuente es este objeto y EventArgs.Empty ya que no queremos pasar parametros adicionales
+                PlayerEventArgs pl = new PlayerEventArgs();
+                pl.card = card;
+                CardPlayed(this, pl);
+            }
+        }
+
+     
     }
 }
